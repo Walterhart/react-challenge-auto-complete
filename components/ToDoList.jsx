@@ -6,6 +6,14 @@ export default function ToDoList() {
 	const [listData, setListData] = React.useState(savedData)
 	const [newItemInput, setNewItemInput] = React.useState("")
 	const [autoCompleteRequested, setAutoCompleteRequested] = React.useState(false)
+	
+	const [isFocus,setIsFocus] = React.useState(false)	// 1) state use for controlling focus/not focus
+
+	// 1) Toggle the boolean state of isFocus 
+	const handleFaded = () =>{
+		setIsFocus(prevFocusState => !prevFocusState)
+		
+	}
 
 	function handleCheckBoxChange(event) {
 		setListData(prevList => {
@@ -49,6 +57,7 @@ export default function ToDoList() {
 
 	function autoComplete() {
 		setAutoCompleteRequested(true)
+		
 	}
 
 	React.useEffect(() => {
@@ -91,6 +100,7 @@ export default function ToDoList() {
 						type="checkbox"
 						name={item.id}
 						onChange={handleCheckBoxChange}
+						checked={item.complete} // 3)  Display checkmark based on 'complete' boolean
 					/>
 					<span className="checkmark"></span>
 					<p className={`to-do-list-item-text ${item.complete && "crossed-out"}`}>
@@ -108,6 +118,7 @@ export default function ToDoList() {
 		)
 	})
 
+
 	return (
 		<div>
 			<div className="to-do-list-container">
@@ -115,18 +126,24 @@ export default function ToDoList() {
 				<label className="new-item-label">
 					<img
 						src="./images/add-item.svg"
-						className="add-item-icon"
+						// 1) conditionally add fadded to className
+						className={`add-item-icon ${isFocus && "faded"}` }
 					/>
 					<input
-						className="new-item-input"
+						className="new-item-input "
 						type="text"
 						onKeyDown={handleEnter}
 						onChange={handleNewItemInputChange}
+						
+						//1) events that handle if input is focus or not		
+						onFocus={handleFaded}
+						onBlur={handleFaded}
+						value={newItemInput}// 2) Make input field controlled
 					/>
 				</label>
 			</div>
 			<div className="do-it-button-container">
-				<button onClick={autoComplete}>AutoComplete</button>
+				<button onClick={autoComplete} >AutoComplete</button>
 			</div>
 		</div>
 	)
